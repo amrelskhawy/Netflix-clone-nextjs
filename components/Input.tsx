@@ -2,10 +2,9 @@ import React from "react"
 
 import InputProps from "@/interfaces/InputProps"
 
-const Input: React.FC<InputProps> = ({id,onChange,placeholder,value, type, label} ) => {
+const Input: React.FC<InputProps> = ({id,onChange,value, type, label} ) => {
   return (
     <div className="relative">
-      
       <input id={id} onChange={onChange} type={type } className="
         block
         rounded-md
@@ -19,7 +18,7 @@ const Input: React.FC<InputProps> = ({id,onChange,placeholder,value, type, label
         focus:outline-none
         focus:ring-0
         peer
-    " placeholder={placeholder} value={value} />
+    " placeholder={' '} value={value} />
     <label htmlFor="email"
     className="
       absolute
