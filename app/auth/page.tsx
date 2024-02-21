@@ -121,7 +121,9 @@ export default function Auth() {
               {variant === 'login' ? 'Login' : 'Register'}
             </button>
 
-            <div className="flex flex-row items-center gap-4 mt-8 justify-center">
+            <div
+            onClick={() => signIn('google', {callbackUrl: '/'})}
+            className="flex flex-row items-center gap-4 mt-8 justify-center">
               <div className="
                   w-10 bg-white h-10 rounded-full flex
                   items-center justify-center cursor-pointer
