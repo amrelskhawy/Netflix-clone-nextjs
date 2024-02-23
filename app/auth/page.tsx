@@ -5,11 +5,21 @@ import axios from "axios"
 import { FcGoogle } from "react-icons/fc"
 import { FaGithub } from "react-icons/fa"
 import { useCallback, useState } from 'react'
-import { signIn } from "next-auth/react";
-import { useRouter } from 'next/navigation';
+import { signIn, useSession } from "next-auth/react";
+import { redirect, useRouter } from 'next/navigation';
 
 export default function Auth() {
   const router = useRouter()
+
+  const { data: session, status } = useSession()
+
+  if (status === 'authenticated') {
+    redirect('/profiles')
+    
+  }
+
+
+  
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -34,6 +44,28 @@ export default function Auth() {
 
   // Register
 
+
+  const login = useCallback(async () => {
+    try {
+      const result = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+      },
+      )
+
+      if (result?.error) {
+        // Handle login error
+        console.error('Login failed:', result.error)
+      } else {
+        // Redirect to home page upon successful login
+        router.push('/profiles')
+      }
+
+    } catch (error: any) {
+      console.log(error)
+    }
+  }, [formData.email, formData.password, router])
+
   const register = useCallback(async () => {
     try {
       console.log(formData)
@@ -46,29 +78,7 @@ export default function Auth() {
     } catch (error: any) {
       console.log(error)
     }
-  }, [formData])
-
-  const login = useCallback(async () => {
-    try {
-      const result = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      },
-      )
-
-      if (result?.error) {
-        // Handle login error
-        console.error('Login failed:', result.error)
-      } else {
-        // Redirect to home page upon successful login
-        router.push('/')
-      }
-
-    } catch (error: any) {
-      console.log(error)
-    }
-  }, [formData.email, formData.password, router])
+  }, [formData, login])
 
 
   return (
@@ -122,7 +132,7 @@ export default function Auth() {
             </button>
 
             <div
-            onClick={() => signIn('google', {callbackUrl: '/'})}
+            onClick={() => signIn('google', {callbackUrl: '/profiles'})}
             className="flex flex-row items-center gap-4 mt-8 justify-center">
               <div className="
                   w-10 bg-white h-10 rounded-full flex
@@ -133,7 +143,7 @@ export default function Auth() {
               </div>
 
               <div
-              onClick={() => signIn('github', {callbackUrl: '/'})}
+              onClick={() => signIn('github', {callbackUrl: '/profiles'})}
               className="
                   w-10 bg-white h-10 rounded-full flex
                   items-center justify-center cursor-pointer
